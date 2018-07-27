@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui">
+<h:head>
+<meta charset="UTF-8"></meta>
+<title>Hello World JSF</title>
+</h:head>
+<h:body>
+	<p:growl id="growl" showDetail="true" />
+	<h:form>
+	<h:panelGroup rendered="#{despesaBean.searching}">
+		<h1>Lista De Estoques</h1>			
+			<p:commandButton action="#{despesaBean.prepareSave}"
+							 value="Novo" 
+							 process="@this"
+							 update="@form"/>
+		<br/>
+		
+		<p:dataTable id="site" value="#{despesaBean.despesas}" var="despesa">
+			<p:column headerText="ID">
+				<h:outputText value="#{despesa.id}"></h:outputText>
+			</p:column>	
+			<p:column headerText="NOME">
+				<h:outputText value="#{despesa.nome}"></h:outputText>
+			</p:column>
+			<p:column headerText="QUANTIDADE">
+				<h:outputText value="#{despesa.valor}"></h:outputText>
+			</p:column>
+			<p:column headerText="DATA">
+				<h:outputText value="#{despesa.data_dia}"></h:outputText>
+			</p:column>
+			<p:column headerText="AÇÕES" style="text-align: center">
+				<p:commandButton icon="ui-icon-trash" actionListener="#{despesaBean.remover(despesa)}" process="site" update="@form growl">
+			        <p:confirm header="Confirmação" message="Você realmente deseja excluir este remédio?" icon="ui-icon-alert" />
+			    </p:commandButton>
+			    <p:commandButton icon="ui-icon-pencil" 
+			    				 action="#{despesaBean.prepareUpdate(despesa)}" 
+			    				 process="site" 
+			    				 update="@form"/>
+			</p:column>
+		</p:dataTable>
+		
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+	        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+	        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+	    </p:confirmDialog>
+	</h:panelGroup>
+	
+	<h:panelGroup rendered="#{despesaBean.cadastrando or despesaBean.editando}">
+		<h1>Cadastro de Remédios</h1>
+		<h:inputHidden value="#{despesaBean.despesa.id}"/>
+		<div class="ui-g">
+			<div class="ui-g-1">
+				<p:outputLabel value="Nome:"/>
+			</div>
+			<div class="ui-g-1">
+				<p:inputText value="#{despesaBean.despesa.nome}" 
+								required="true"/>
+			</div>
+		</div>
+		<div class="ui-g">
+			<div class="ui-g-1">
+				<p:outputLabel value="Valor:"/>
+			</div>
+			<div class="ui-g-1">
+				<p:inputText value="#{despesaBean.despesa.valor}" 
+								required="true"/>
+			</div>
+		</div>	
+		
+		<br/>
+		<p:commandButton action="#{despesaBean.salvar}" 
+							value="Salvar"
+							process="@form"
+							update="@form growl"
+							rendered="#{despesaBean.cadastrando}"
+							/>
+		<p:commandButton action="#{despesaBean.editar}" 
+							value="Atualizar"
+							process="@form"
+							update="@form growl"
+							rendered="#{despesaBean.editando}"
+							/>
+		<p:commandButton action="Site.jsf" 
+							value="Voltar"
+							process="@this"
+							update="@form"
+							/>
+	</h:panelGroup>
+	</h:form>
+</h:body>
+</html>
